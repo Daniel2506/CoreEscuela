@@ -1,0 +1,2 @@
+# CoreEscuela
+.NetCore
