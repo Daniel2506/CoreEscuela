@@ -27,10 +27,10 @@ namespace CoreEscuela
             var asgList = reporteador.GetAsignaturas();
             var evaXAsgList = reporteador.GetEvaluxAsig();
             var promEvaXAsgList = reporteador.GetPromedioAlumXAsg();
-
-
-            ImprimirCursos(engine.Escuela);
-
+            var topList = reporteador.GetTopPromedio(5, "Math");
+        
+            //ImprimirCursos(engine.Escuela);
+            
             var listaObjetos = engine.GetObjectsBase();
 
             /*var listaILugar = from obj  in listaObjetos
@@ -40,7 +40,7 @@ namespace CoreEscuela
             //engine.Escuela.LimpiarLugar();
 
             var dictionary = engine.GetDictionary();
-            engine.ImprimirDiccionario(dictionary, true);
+            //engine.ImprimirDiccionario(dictionary, true);
         }
 
         private static void AccionEvent(object sender, EventArgs e)

@@ -60,31 +60,51 @@ namespace CoreEscuela.Entidades
             }
             return dictionary;
         }
-        public Dictionary<string, IEnumerable<object> > GetPromedioAlumXAsg()
+        public Dictionary<string, IEnumerable<AlumnoPromedio> > GetPromedioAlumXAsg()
         {
-            var dictionary = new Dictionary<string, IEnumerable<object>>();
+            var dictionary = new Dictionary<string, IEnumerable<AlumnoPromedio>>();
 
             var dicEvalXAsig =  GetEvaluxAsig();
 
 
             foreach (var item in dicEvalXAsig)
             {
-                var a = from ev in item.Value
-                        group ev by new
-                        { 
-                            ev.Alumno.UniqueId,
-                            ev.Nota
-                        }
-                        into  grupoEvalAlum
-                        select new 
-                        {
-                            AlumnoId = grupoEvalAlum.Key,
-                            Promedio = grupoEvalAlum.Average( evalucion => evalucion.Nota )
-                        };
+                var promediosAlumnos = from ev in item.Value
+                                        group ev by new
+                                        { 
+                                            ev.Alumno.UniqueId,
+                                            ev.Alumno.Nombre
+                                        }
+                                        into  grupoEvalAlum
+                                        select new AlumnoPromedio
+                                        {
+                                            AlumnoNombre = grupoEvalAlum.Key.Nombre,
+                                            AlumnoId = grupoEvalAlum.Key.UniqueId,
+                                            Promedio = grupoEvalAlum.Average( evalucion => evalucion.Nota )
+                                        };
+                dictionary.Add(item.Key, promediosAlumnos);
             }
 
 
             return dictionary;
+        }
+
+        public IEnumerable<AlumnoPromedio> GetTopPromedio(int tpo, string materia)
+        {
+            var list = new List<AlumnoPromedio>();
+
+            var listPromedios = GetPromedioAlumXAsg();
+
+            foreach (var item in listPromedios.Where(key => key.Key == materia))
+            {
+                list.AddRange( (from t in item.Value
+                        where item.Key == materia
+                        orderby t.Promedio descending
+                        select t).Take(tpo).ToList()) ;  
+                        Console.WriteLine("hey");
+            }
+
+            return list;
         }
     }
 }
